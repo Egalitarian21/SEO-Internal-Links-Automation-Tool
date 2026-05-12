@@ -1,0 +1,20 @@
+📁 my-wiki/
+├── 📁 raw/                  ← 第一层：原始资料（只读，LLM不修改）
+│   ├── article-seo-2026.md
+│   ├── paper-llm-agents.pdf
+│   └── assets/              ← 本地图片存放处
+│
+├── 📁 wiki/                 ← 第二层：LLM生成的知识库（LLM负责写）
+│   ├── index.md             ← 内容目录（按类别索引所有页面）
+│   ├── log.md               ← 操作日志（时间线记录）
+│   ├── overview.md          ← 整体综述
+│   ├── entities/            ← 实体页（人物、工具、产品）
+│   │   ├── claude.md
+│   │   └── obsidian.md
+│   ├── concepts/            ← 概念页（RAG、向量搜索、SEO等）
+│   │   ├── rag.md
+│   │   └── llm-wiki.md
+│   └── sources/             ← 每篇原始资料的摘要页
+│       └── article-seo-2026-summary.md
+│
+└── CLAUDE.md                ← 第三层：Schema（告诉LLM如何工作）

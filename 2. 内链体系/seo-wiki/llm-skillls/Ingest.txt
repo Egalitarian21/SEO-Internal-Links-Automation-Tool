@@ -1,0 +1,6 @@
+我刚添加了一篇新文章到 raw/xxx.md，
+请按照 Schema 的 Ingest 流程处理它。
+
+工作流程：
+- 创建wiki/sources/xxx.md
+- 更新 wiki/concepts/xxx.md

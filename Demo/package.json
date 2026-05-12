@@ -1,0 +1,18 @@
+{
+  "name": "sitemap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "fs": "0.0.2",
+    "puppeteer": "^20.7.4",
+    "sharp": "^0.32.1",
+    "util": "^0.12.5"
+  }
+}

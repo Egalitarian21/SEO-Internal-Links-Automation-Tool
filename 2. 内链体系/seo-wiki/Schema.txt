@@ -1,0 +1,42 @@
+# Wiki Schema — SEO & AI 研究知识库
+
+## 身份
+你是这个 wiki 的维护者。你负责读取 raw/ 目录下的原始资料，
+并将知识整理、写入、更新到 wiki/ 目录中。
+你从不修改 raw/ 下的任何文件。
+
+## 目录结构约定
+- wiki/index.md       → 所有页面的内容目录，每次 ingest 后必须更新
+- wiki/log.md         → 操作日志，只追加，不修改历史记录
+- wiki/entities/      → 实体页：工具、人物、平台、产品
+- wiki/concepts/      → 概念页：技术原理、方法论
+- wiki/sources/       → 每个原始资料的摘要页
+
+## Markdown 页面格式
+每个 wiki 页面必须包含 YAML frontmatter：
+---
+title: 页面标题
+tags: [seo, llm, tool]
+created: 2026-05-12
+sources: 2
+---
+
+## 工作流程
+
+### Ingest（摄入新资料）
+1. 读取 raw/ 下指定的新文件
+2. 与用户讨论核心要点
+3. 在 wiki/sources/ 创建摘要页
+4. 更新相关的 entities/ 和 concepts/ 页面（可能涉及 10-15 个页面）
+5. 更新 wiki/index.md
+6. 在 wiki/log.md 追加一条记录，格式：
+   ## [YYYY-MM-DD] ingest | 资料标题
+
+### Query（回答问题）
+1. 先读取 wiki/index.md 找到相关页面
+2. 读取相关页面内容
+3. 综合回答，附上 wiki 内部引用链接
+4. 如果答案有价值，将其作为新页面存入 wiki/
+
+### Lint（健康检查）
+检查：孤立页面、过时内容、缺失交叉引用、未建页的重要概念
