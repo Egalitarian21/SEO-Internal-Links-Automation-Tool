@@ -1,0 +1,16 @@
+backend/app/
+├── sitemap_importer.py       # 处理人工导入 URL
+├── web_crawler.py            # 根据 URL 爬取博客内容
+├── content_cleaner.py        # 清洗 HTML、提取正文
+├── wiki_card_generator.py    # LLM 批量生成 Wiki 卡片
+├── anchor_matcher.py         # LLM 选择锚文本和匹配卡片
+├── shopify_publisher.py      # 创建 Shopify 博客
+├── review_service.py         # 审核流程
+├── models.py
+├── schemas.py
+└── routers/
+    ├── imports.py
+    ├── drafts.py
+    ├── cards.py
+    ├── suggestions.py
+    └── publish.py

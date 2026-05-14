@@ -1,0 +1,17 @@
+1. 人工从 Sitemap 获取博客 URL
+2. 前端批量导入 URL
+3. 后端保存 Import Task
+4. 后端爬取博客内容
+5. 清洗 HTML / 提取正文 / 标题 / Meta
+6. LLM 批量生成 Wiki 卡片
+7. Wiki Cards 入库
+8. 实施工程师在前端选择某篇博客进入审核
+9. 后端调用 LLM：
+	- 分析博客正文
+	- 选择合适锚文本
+	- 从 Wiki Cards 中匹配目标卡片
+	- 生成内链建议
+10. 前端展示待审批内链建议
+11. 人工 Approve / Reject
+12. 生成最终博客 HTML
+13. 调用 Shopify API 创建博客

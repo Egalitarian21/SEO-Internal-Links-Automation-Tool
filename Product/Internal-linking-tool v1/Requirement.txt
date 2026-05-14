@@ -1,0 +1,116 @@
+# Internal-linking-tool v1 - Requirements Checklist
+
+更新时间：2026-05-13
+
+说明：
+- 本文件用于“开工前依赖准备清单”。
+- 同时包含系统依赖、前端依赖、后端依赖与外部服务账号。
+- Python 依赖可直接用于 `requirements.txt`（建议后续按实际代码再精简）。
+
+==================================================
+1) 系统与运行环境（必备）
+==================================================
+
+[ ] Git
+[ ] Node.js 20 LTS
+[ ] pnpm（建议）或 npm（二选一）
+[ ] Python 3.11+
+[ ] pip 或 uv（建议 uv）
+[ ] Docker Desktop（建议）
+[ ] Redis（本地开发可用 Docker）
+[ ] PostgreSQL 16 + pgvector（或直接使用 Supabase）
+
+
+==================================================
+2) 前端依赖（Next.js 15）
+==================================================
+
+核心：
+- next@15
+- react
+- react-dom
+- typescript
+
+样式与组件：
+- tailwindcss
+- postcss
+- autoprefixer
+- class-variance-authority
+- clsx
+- tailwind-merge
+- lucide-react
+
+状态与数据：
+- @tanstack/react-query
+- @tanstack/react-table
+- zustand
+
+表单与校验：
+- react-hook-form
+- zod
+- @hookform/resolvers
+
+认证与网络：
+- next-auth@beta   (Auth.js v5)
+- axios            (可选，若统一使用 fetch 可不装)
+
+工程化（建议）：
+- eslint
+- eslint-config-next
+- prettier
+
+
+==================================================
+3) 后端 Python 依赖（FastAPI + Celery + AI）
+==================================================
+
+可直接复制到 Python requirements.txt（初始版）：
+
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+sqlalchemy
+alembic
+psycopg[binary]
+httpx
+celery
+redis
+langchain
+openai
+pgvector
+beautifulsoup4
+lxml
+readability-lxml
+trafilatura
+tenacity
+orjson
+python-dotenv
+cryptography
+ruff
+black
+mypy
+pytest
+pytest-asyncio
+
+
+==================================================
+4) 数据与平台服务（开工前开通）
+==================================================
+
+[ ] Supabase（PostgreSQL + pgvector）
+[ ] Vercel（前端部署）
+[ ] Railway（FastAPI / Celery Worker / Redis）
+[ ] 私有模型服务（Qwen3-32B-Instruct + bge-large-en-v1.5，OpenAI-compatible）
+[ ] Shopify Admin API 测试店铺与凭证
+
+
+==================================================
+5) 建议的目录内文件拆分（下一步可做）
+==================================================
+
+- frontend/package.json         -> 前端 npm 依赖
+- backend/requirements.txt      -> 后端 Python 依赖
+- .env.example                  -> 环境变量模板
+
+注：当前 `Requirement.txt` 为总清单，不替代上述项目内真实依赖文件。

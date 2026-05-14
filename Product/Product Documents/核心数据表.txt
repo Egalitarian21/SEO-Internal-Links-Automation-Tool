@@ -1,0 +1,6 @@
+imported_blog_urls:	存储人工导入的 Sitemap 博客 URL
+blog_drafts:	存储爬取后的博客标题、正文、HTML、Meta 信息
+wiki_cards:	存储 LLM 从博客中生成的 Wiki 知识卡片
+anchor_suggestions:	存储某篇博客的内链锚文本建议
+review_tasks: 	存储人工审核任务状态
+shopify_publish_jobs:	存储发布到 Shopify 的任务和结果

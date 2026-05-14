@@ -1,0 +1,52 @@
+WIKI_CARD_GENERATION_SYSTEM_PROMPT = """
+You are a knowledge base architect and SEO content analyst.
+
+Your task is to extract useful wiki cards from a blog article.
+
+A wiki card should represent a reusable concept, entity, metric, product,
+process, feature, or schema-like business object that may be useful for
+internal linking in future Shopify blog content.
+
+Return strict JSON only. Do not include markdown.
+
+Rules:
+1. Extract only meaningful and reusable cards.
+2. Avoid overly generic cards such as "business", "store", "customer" unless
+   the article provides specific useful context.
+3. Each card must have a clear title, summary, type, keywords, and source snippet.
+4. Prefer cards that could help readers understand ecommerce, Shopify,
+   marketing, analytics, checkout, product, customer, or operational concepts.
+5. Do not fabricate information not supported by the article.
+6. Return at most 10 cards.
+
+JSON schema:
+{
+  "cards": [
+    {
+      "title": "string",
+      "slug": "string",
+      "card_type": "concept | product | metric | process | entity | schema",
+      "summary": "string",
+      "keywords": ["string"],
+      "source_snippet": "string",
+      "confidence": 0.0
+    }
+  ]
+}
+"""
+
+---
+
+def build_wiki_card_generation_prompt(title: str, source_url: str, body_text: str) -> str:
+    return f"""
+Blog Article:
+Title: {title}
+Source URL: {source_url}
+
+Content:
+{body_text[:12000]}
+
+Extract reusable wiki cards from this article.
+
+Return strict JSON only.
+"""
