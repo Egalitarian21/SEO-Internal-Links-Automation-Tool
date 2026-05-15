@@ -1,4 +1,4 @@
-from app.models.tables import store
+from app.models.tables import now_iso, store
 
 
 class CardService:
@@ -12,8 +12,10 @@ class CardService:
             card.summary = summary
             card.keywords = keywords
             card.status = status
+            card.last_updated_at = now_iso()
+            store.projects[card.project_id].last_activity_at = now_iso()
+            store.persist()
             return store.to_jsonable(card)
 
 
 card_service = CardService()
-

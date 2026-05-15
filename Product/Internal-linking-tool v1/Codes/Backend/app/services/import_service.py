@@ -28,6 +28,11 @@ class ImportService:
             parsed = urlparse(url)
             if not parsed.scheme or not parsed.netloc:
                 failed += 1
+                with store.lock:
+                    store.imported_urls.setdefault(project_id, []).append(
+                        {"url": url, "status": "failed", "imported_at": now_iso(), "error": "Invalid URL"}
+                    )
+                    store.persist()
                 task_bus.update(task_id, progress=int(index / len(urls) * 100), detail=f"Skipped invalid URL: {url}")
                 continue
 
@@ -65,10 +70,14 @@ class ImportService:
             with store.lock:
                 store.articles[article.id] = article
                 store.cards[card.id] = card
+                store.imported_urls.setdefault(project_id, []).append(
+                    {"url": url, "status": "imported", "imported_at": article.imported_at}
+                )
                 project = store.projects[project_id]
                 project.imported_urls += 1
                 project.wiki_cards += 1
                 project.last_activity_at = now_iso()
+                store.persist()
             imported += 1
             task_bus.update(task_id, progress=int(index / len(urls) * 100), detail=f"Imported {title_stub}")
         return {"imported": imported, "failed": failed}

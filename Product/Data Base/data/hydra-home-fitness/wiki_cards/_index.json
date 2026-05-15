@@ -1,0 +1,25 @@
+{
+  "cards": {
+    "card_small_space": {
+      "file": "card_small_space.json",
+      "article_id": "art_setup",
+      "title": "Small Space Strength Training Guide",
+      "status": "published",
+      "updated_at": "2026-05-15T06:37:03.106250Z"
+    },
+    "card_progressive_overload": {
+      "file": "card_progressive_overload.json",
+      "article_id": null,
+      "title": "Progressive Overload for Beginners",
+      "status": "published",
+      "updated_at": "2026-05-15T06:34:43.093718Z"
+    },
+    "card_8b830fbe": {
+      "file": "card_8b830fbe.json",
+      "article_id": "art_4b17ea0d",
+      "title": "Blogs/Training/Persistence Check Wiki Card",
+      "status": "draft",
+      "updated_at": "2026-05-15T06:37:03.603870Z"
+    }
+  }
+}

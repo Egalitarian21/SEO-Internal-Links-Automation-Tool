@@ -58,6 +58,7 @@ class RecommendService:
                 store.suggestions[suggestion.id] = suggestion
                 store.articles[article_id].last_recommendation_at = now_iso()
                 store.projects[article.project_id].last_activity_at = now_iso()
+                store.persist()
             created += 1
             task_bus.update(task_id, progress=min(95, int(((index + 1) / len(article.paragraphs)) * 100)), detail=f"Scored paragraph {index + 1}")
         return {"created": created}
@@ -90,4 +91,3 @@ class RecommendService:
 
 
 recommend_service = RecommendService()
-

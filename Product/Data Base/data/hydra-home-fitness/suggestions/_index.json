@@ -1,0 +1,28 @@
+{
+  "sources": {
+    "art_strength": {
+      "file": "art_strength.json",
+      "total": 2,
+      "pending": 0,
+      "approved": 2,
+      "rejected": 0,
+      "updated_at": "2026-05-15T01:34:43.093737Z"
+    },
+    "art_setup": {
+      "file": "art_setup.json",
+      "total": 1,
+      "pending": 1,
+      "approved": 0,
+      "rejected": 0,
+      "updated_at": "2026-05-15T02:34:43.093744Z"
+    },
+    "art_recovery": {
+      "file": "art_recovery.json",
+      "total": 1,
+      "pending": 0,
+      "approved": 1,
+      "rejected": 0,
+      "updated_at": "2026-05-15T03:34:43.093750Z"
+    }
+  }
+}

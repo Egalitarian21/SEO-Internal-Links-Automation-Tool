@@ -1,0 +1,28 @@
+[
+  {
+    "id": "sug_003",
+    "project_id": "proj_hydra",
+    "article_id": "art_setup",
+    "anchor_text": "small garage gym",
+    "context_before": "A",
+    "context_after": "should prioritize storage, adjustable equipment, and clear traffic lanes.",
+    "target_title": "Small Space Strength Training Guide",
+    "target_url": "https://hydrafitness.com/blogs/training/small-space-strength-guide",
+    "page_type": "blog",
+    "status": "pending",
+    "edited_anchor_text": null,
+    "relevance": {
+      "anchor_target": 89,
+      "paragraph_target": 93,
+      "continuity": 90
+    },
+    "rule_violations": [
+      {
+        "severity": "blocker",
+        "rule_id": "P-01",
+        "message": "Anchor appears in the opening sentence."
+      }
+    ],
+    "created_at": "2026-05-15T02:34:43.093744Z"
+  }
+]

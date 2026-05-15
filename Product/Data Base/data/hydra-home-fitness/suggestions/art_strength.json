@@ -1,0 +1,48 @@
+[
+  {
+    "id": "sug_001",
+    "project_id": "proj_hydra",
+    "article_id": "art_strength",
+    "anchor_text": "adjustable dumbbells",
+    "context_before": "Most new lifters see the fastest progress when they pair compound lifts with",
+    "context_after": "and a stable bench.",
+    "target_title": "Hydra Adjustable Dumbbells",
+    "target_url": "https://hydrafitness.com/products/adjustable-dumbbells",
+    "page_type": "product",
+    "status": "approved",
+    "edited_anchor_text": null,
+    "relevance": {
+      "anchor_target": 95,
+      "paragraph_target": 91,
+      "continuity": 89
+    },
+    "rule_violations": [],
+    "created_at": "2026-05-15T00:34:43.093725Z"
+  },
+  {
+    "id": "sug_002",
+    "project_id": "proj_hydra",
+    "article_id": "art_strength",
+    "anchor_text": "stable bench",
+    "context_before": "Most new lifters see the fastest progress when they pair compound lifts with adjustable dumbbells and a",
+    "context_after": ".",
+    "target_title": "Hydra Foldable Training Bench",
+    "target_url": "https://hydrafitness.com/products/foldable-training-bench",
+    "page_type": "product",
+    "status": "approved",
+    "edited_anchor_text": "stable foldable bench",
+    "relevance": {
+      "anchor_target": 86,
+      "paragraph_target": 88,
+      "continuity": 84
+    },
+    "rule_violations": [
+      {
+        "severity": "warning",
+        "rule_id": "Q-02",
+        "message": "Article already has 2 commercial links."
+      }
+    ],
+    "created_at": "2026-05-15T01:34:43.093737Z"
+  }
+]

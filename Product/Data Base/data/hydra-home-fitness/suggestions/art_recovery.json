@@ -1,0 +1,28 @@
+[
+  {
+    "id": "sug_004",
+    "project_id": "proj_hydra",
+    "article_id": "art_recovery",
+    "anchor_text": "mobility block",
+    "context_before": "A short",
+    "context_after": "and lighter accessory work often matter more than adding more intensity.",
+    "target_title": "Recovery Collection",
+    "target_url": "https://hydrafitness.com/collections/recovery-tools",
+    "page_type": "collection",
+    "status": "approved",
+    "edited_anchor_text": "mobility recovery tools",
+    "relevance": {
+      "anchor_target": 82,
+      "paragraph_target": 85,
+      "continuity": 79
+    },
+    "rule_violations": [
+      {
+        "severity": "warning",
+        "rule_id": "A-05",
+        "message": "Original anchor text was too generic."
+      }
+    ],
+    "created_at": "2026-05-15T03:34:43.093750Z"
+  }
+]

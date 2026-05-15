@@ -14,6 +14,10 @@ class VectorRepo:
         ranked.sort(key=lambda item: item[0], reverse=True)
         return [card for _, card in ranked[:5]]
 
+    def refresh_embeddings(self, project_id: str) -> None:
+        with store.lock:
+            store.client_slug(project_id)
+            store.persist()
+
 
 vector_repo = VectorRepo()
-

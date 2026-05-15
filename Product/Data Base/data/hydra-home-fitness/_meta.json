@@ -1,0 +1,74 @@
+{
+  "project_id": "proj_hydra",
+  "name": "Hydra Home Fitness",
+  "shopify_domain": "hydrafitness.com",
+  "owner": "SEO Ops",
+  "status": "active",
+  "created_at": "2026-04-27T06:34:43.093651Z",
+  "updated_at": "2026-05-15T06:37:04.653753Z",
+  "config": {
+    "shopify_domain": "hydrafitness.com",
+    "shopify_token_ref": null,
+    "token_storage_note": "Reserved for env vars or a secret manager; do not hard-code tokens in code."
+  },
+  "tasks": [
+    {
+      "id": "task_seed_import",
+      "project_id": "proj_hydra",
+      "task_type": "import",
+      "status": "success",
+      "title": "Initial content import",
+      "created_at": "2026-05-08T06:34:43.093760Z",
+      "updated_at": "2026-05-08T06:34:43.093764Z",
+      "progress": 100,
+      "detail": "6 URLs imported successfully.",
+      "result": {
+        "imported": 6,
+        "failed": 0
+      }
+    },
+    {
+      "id": "task_87ce434d",
+      "project_id": "proj_hydra",
+      "task_type": "import",
+      "status": "queued",
+      "title": "Import 1 URLs",
+      "created_at": "2026-05-15T06:35:55.047402Z",
+      "updated_at": "2026-05-15T06:35:55.047411Z",
+      "progress": 0,
+      "detail": "Queued for execution.",
+      "result": {}
+    },
+    {
+      "id": "task_0f07347b",
+      "project_id": "proj_hydra",
+      "task_type": "import",
+      "status": "success",
+      "title": "Import 1 URLs",
+      "created_at": "2026-05-15T06:37:03.183588Z",
+      "updated_at": "2026-05-15T06:37:03.683464Z",
+      "progress": 100,
+      "detail": "Task completed.",
+      "result": {
+        "imported": 1,
+        "failed": 0
+      }
+    },
+    {
+      "id": "task_305f1bdb",
+      "project_id": "proj_hydra",
+      "task_type": "publish",
+      "status": "success",
+      "title": "Run pre-publish checks and publish",
+      "created_at": "2026-05-15T06:37:03.838568Z",
+      "updated_at": "2026-05-15T06:37:04.706383Z",
+      "progress": 100,
+      "detail": "Task completed.",
+      "result": {
+        "publish_job_id": "pub_1c05f600",
+        "status": "published",
+        "article_count": "1"
+      }
+    }
+  ]
+}

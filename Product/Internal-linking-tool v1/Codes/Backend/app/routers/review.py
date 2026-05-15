@@ -22,6 +22,17 @@ def review_suggestion(suggestion_id: str, request: ReviewSuggestionRequest) -> d
             ]
         )
         store.projects[suggestion.project_id].approved_suggestions = approved_count
+        store.append_review_log(
+            suggestion.project_id,
+            {
+                "suggestion_id": suggestion_id,
+                "action": request.action,
+                "reviewer": "demo-user",
+                "edited_anchor": request.edited_anchor_text,
+                "time": now_iso(),
+            },
+        )
+        store.persist()
     return {"data": store.to_jsonable(suggestion)}
 
 
@@ -34,6 +45,16 @@ def batch_review(request: BatchReviewRequest) -> dict:
             suggestion = store.suggestions[suggestion_id]
             suggestion.status = request.action
             project_id = suggestion.project_id
+            store.append_review_log(
+                suggestion.project_id,
+                {
+                    "suggestion_id": suggestion_id,
+                    "action": request.action,
+                    "reviewer": "demo-user",
+                    "edited_anchor": suggestion.edited_anchor_text,
+                    "time": now_iso(),
+                },
+            )
             updated.append(store.to_jsonable(suggestion))
         if project_id:
             store.projects[project_id].approved_suggestions = len(
@@ -43,4 +64,6 @@ def batch_review(request: BatchReviewRequest) -> dict:
                     if item.project_id == project_id and item.status == "approved"
                 ]
             )
+            store.projects[project_id].last_activity_at = now_iso()
+        store.persist()
     return {"data": {"updated": updated, "count": len(updated)}}

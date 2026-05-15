@@ -1,0 +1,23 @@
+{
+  "id": "art_4b17ea0d",
+  "project_id": "proj_hydra",
+  "title": "Blogs/Training/Persistence Check",
+  "url": "https://hydrafitness.com/blogs/training/persistence-check",
+  "category": "imported",
+  "status": "ready",
+  "imported_at": "2026-05-15T06:37:03.603845Z",
+  "last_recommendation_at": null,
+  "excerpt": "Imported draft generated from hydrafitness.com.",
+  "paragraphs": [
+    "Blogs/Training/Persistence Check is now part of the internal linking workspace.",
+    "This demo article was generated from a batch import and is ready for recommendation review.",
+    "Editors can now attach wiki cards, generate suggestions, and push approved links to publish."
+  ],
+  "existing_links": 0,
+  "body_html": "<p>Blogs/Training/Persistence Check is now part of the internal linking workspace.</p><p>This demo article was generated from a batch import and is ready for recommendation review.</p><p>Editors can now attach wiki cards, generate suggestions, and push approved links to publish.</p>",
+  "body_text": "Blogs/Training/Persistence Check is now part of the internal linking workspace.\n\nThis demo article was generated from a batch import and is ready for recommendation review.\n\nEditors can now attach wiki cards, generate suggestions, and push approved links to publish.",
+  "meta": {
+    "category": "imported"
+  },
+  "headings": []
+}

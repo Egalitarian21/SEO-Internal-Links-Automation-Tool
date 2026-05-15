@@ -56,8 +56,14 @@ class PublishService:
             store.publish_jobs[job.id] = job
             project = store.projects[project_id]
             project.last_activity_at = now_iso()
+            store.persist()
         task_bus.update(task_id, progress=80, detail="Publishing to Shopify demo client.")
         result = shopify_client.publish(article_ids)
+        with store.lock:
+            store.publish_jobs[job.id].shopify_response = result
+            store.publish_jobs[job.id].updated_at = now_iso()
+            store.projects[project_id].last_activity_at = now_iso()
+            store.persist()
         return {"publish_job_id": job.id, **result}
 
     def rollback(self, job_id: str) -> dict:
@@ -65,6 +71,8 @@ class PublishService:
             job = store.publish_jobs[job_id]
             job.status = "rolled_back"
             job.updated_at = now_iso()
+            store.projects[job.project_id].last_activity_at = now_iso()
+            store.persist()
         return shopify_client.rollback(job_id)
 
 

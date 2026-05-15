@@ -52,6 +52,9 @@ def create_project(request: CreateProjectRequest) -> dict:
     )
     with store.lock:
         store.projects[project.id] = project
+        store.imported_urls[project.id] = []
+        store.review_logs[project.id] = []
+        store.persist()
     return {"data": store.to_jsonable(project)}
 
 
@@ -78,4 +81,3 @@ def get_project(project_id: str) -> dict:
             },
         }
     }
-

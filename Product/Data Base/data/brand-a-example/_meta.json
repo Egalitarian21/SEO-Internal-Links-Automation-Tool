@@ -1,0 +1,15 @@
+{
+  "project_id": "proj_cbdcbd6c",
+  "name": "Brand A",
+  "shopify_domain": "brand-a.example",
+  "owner": "SEO Ops",
+  "status": "active",
+  "created_at": "2026-05-15T06:38:56.697335Z",
+  "updated_at": "2026-05-15T06:38:56.697343Z",
+  "config": {
+    "shopify_domain": "brand-a.example",
+    "shopify_token_ref": null,
+    "token_storage_note": "Reserved for env vars or a secret manager; do not hard-code tokens in code."
+  },
+  "tasks": []
+}

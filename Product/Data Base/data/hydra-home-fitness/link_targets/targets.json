@@ -1,0 +1,59 @@
+[
+  {
+    "id": "card_adjustable_dumbbells",
+    "target_id": "card_adjustable_dumbbells",
+    "project_id": "proj_hydra",
+    "url": "https://hydrafitness.com/products/adjustable-dumbbells",
+    "target_url": "https://hydrafitness.com/products/adjustable-dumbbells",
+    "meta_title": "Hydra Adjustable Dumbbells",
+    "title": "Hydra Adjustable Dumbbells",
+    "page_type": "product",
+    "summary": "Adjustable dumbbells for home strength progression without taking over the room.",
+    "keywords": [
+      "adjustable dumbbells",
+      "home strength",
+      "compact equipment"
+    ],
+    "status": "published",
+    "last_updated_at": "2026-05-15T06:34:43.093704Z",
+    "source_article_id": null
+  },
+  {
+    "id": "card_training_bench",
+    "target_id": "card_training_bench",
+    "project_id": "proj_hydra",
+    "url": "https://hydrafitness.com/products/foldable-training-bench",
+    "target_url": "https://hydrafitness.com/products/foldable-training-bench",
+    "meta_title": "Hydra Foldable Training Bench",
+    "title": "Hydra Foldable Training Bench",
+    "page_type": "product",
+    "summary": "A stable bench that folds away for small-space setups.",
+    "keywords": [
+      "training bench",
+      "foldable bench",
+      "garage gym"
+    ],
+    "status": "published",
+    "last_updated_at": "2026-05-15T06:34:43.093710Z",
+    "source_article_id": null
+  },
+  {
+    "id": "card_recovery_collection",
+    "target_id": "card_recovery_collection",
+    "project_id": "proj_hydra",
+    "url": "https://hydrafitness.com/collections/recovery-tools",
+    "target_url": "https://hydrafitness.com/collections/recovery-tools",
+    "meta_title": "Recovery Collection",
+    "title": "Recovery Collection",
+    "page_type": "collection",
+    "summary": "Massage tools and mobility accessories for easier recovery.",
+    "keywords": [
+      "recovery",
+      "mobility",
+      "massage tools"
+    ],
+    "status": "published",
+    "last_updated_at": "2026-05-15T06:34:43.093716Z",
+    "source_article_id": null
+  }
+]

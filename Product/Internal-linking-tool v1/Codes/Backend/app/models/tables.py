@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
-from threading import Lock
+from threading import RLock
 from typing import Any
 from uuid import uuid4
+
+from app.infra.file_store import LocalFileStore
 
 
 def now_iso() -> str:
@@ -123,20 +125,41 @@ class PublishJob:
     updated_at: str
     before_html_snapshot: str
     after_html_snapshot: str
+    shopify_response: dict[str, Any] = field(default_factory=dict)
 
 
 class DemoStore:
     def __init__(self) -> None:
-        self.lock = Lock()
+        self.lock = RLock()
+        self.file_store = LocalFileStore()
         self.projects: dict[str, Project] = {}
+        self.project_clients: dict[str, str] = {}
         self.articles: dict[str, Article] = {}
         self.cards: dict[str, Card] = {}
         self.suggestions: dict[str, Suggestion] = {}
         self.tasks: dict[str, TaskRecord] = {}
         self.publish_jobs: dict[str, PublishJob] = {}
+        self.imported_urls: dict[str, list[dict[str, Any]]] = {}
+        self.review_logs: dict[str, list[dict[str, Any]]] = {}
+        self.load_or_seed()
+
+    def load_or_seed(self) -> None:
+        if self.file_store.has_projects():
+            self._load_from_payload(self.file_store.load_all())
+            return
         self.seed()
+        self.persist()
 
     def seed(self) -> None:
+        self.projects.clear()
+        self.project_clients.clear()
+        self.articles.clear()
+        self.cards.clear()
+        self.suggestions.clear()
+        self.tasks.clear()
+        self.publish_jobs.clear()
+        self.imported_urls.clear()
+        self.review_logs.clear()
         project = Project(
             id="proj_hydra",
             name="Hydra Home Fitness",
@@ -153,6 +176,7 @@ class DemoStore:
             description="An ecommerce content program focused on home gym equipment and training guides.",
         )
         self.projects[project.id] = project
+        self.project_clients[project.id] = "hydra-home-fitness"
 
         articles = [
             Article(
@@ -209,6 +233,10 @@ class DemoStore:
         ]
         for article in articles:
             self.articles[article.id] = article
+        self.imported_urls[project.id] = [
+            {"url": article.url, "status": "imported", "imported_at": article.imported_at}
+            for article in articles
+        ]
 
         cards = [
             Card(
@@ -358,8 +386,45 @@ class DemoStore:
         )
         self.tasks[task.id] = task
 
+        publish_job = PublishJob(
+            id="pub_seed_strength",
+            project_id=project.id,
+            article_ids=["art_strength"],
+            status="success",
+            blockers=0,
+            warnings=1,
+            created_at=(datetime.utcnow() - timedelta(days=1)).isoformat() + "Z",
+            updated_at=(datetime.utcnow() - timedelta(days=1)).isoformat() + "Z",
+            before_html_snapshot="<article><p>Beginner strength routine draft.</p></article>",
+            after_html_snapshot="<article><p>Beginner strength routine draft with approved internal links.</p></article>",
+        )
+        self.publish_jobs[publish_job.id] = publish_job
+        self.review_logs[project.id] = []
+
     def project_list(self) -> list[Project]:
         return list(self.projects.values())
+
+    def persist(self) -> None:
+        self.project_clients = self.file_store.save_all(
+            projects={key: asdict(value) for key, value in self.projects.items()},
+            project_clients=self.project_clients,
+            articles={key: asdict(value) for key, value in self.articles.items()},
+            cards={key: asdict(value) for key, value in self.cards.items()},
+            suggestions={key: asdict(value) for key, value in self.suggestions.items()},
+            tasks={key: asdict(value) for key, value in self.tasks.items()},
+            publish_jobs={key: asdict(value) for key, value in self.publish_jobs.items()},
+            imported_urls=self.imported_urls,
+            review_logs=self.review_logs,
+        )
+
+    def client_slug(self, project_id: str) -> str:
+        if project_id not in self.project_clients:
+            project = self.projects[project_id]
+            self.project_clients[project_id] = self.file_store.slugify(project.domain or project.name)
+        return self.project_clients[project_id]
+
+    def append_review_log(self, project_id: str, entry: dict[str, Any]) -> None:
+        self.review_logs.setdefault(project_id, []).append(entry)
 
     def to_jsonable(self, obj: Any) -> Any:
         if isinstance(obj, list):
@@ -371,6 +436,52 @@ class DemoStore:
             return data
         return obj
 
+    def _load_from_payload(self, payload: dict[str, Any]) -> None:
+        self.project_clients = dict(payload.get("project_clients", {}))
+        self.projects = {
+            project_id: Project(**self._pick(Project, data))
+            for project_id, data in payload.get("projects", {}).items()
+        }
+        self.articles = {
+            article_id: Article(**self._pick(Article, data))
+            for article_id, data in payload.get("articles", {}).items()
+        }
+        self.cards = {
+            card_id: Card(**self._pick(Card, data))
+            for card_id, data in payload.get("cards", {}).items()
+        }
+        self.suggestions = {
+            suggestion_id: self._suggestion_from_dict(data)
+            for suggestion_id, data in payload.get("suggestions", {}).items()
+        }
+        self.tasks = {
+            task_id: TaskRecord(**self._pick(TaskRecord, {**data, "result": data.get("result", {})}))
+            for task_id, data in payload.get("tasks", {}).items()
+        }
+        self.publish_jobs = {
+            job_id: PublishJob(**self._pick(PublishJob, data))
+            for job_id, data in payload.get("publish_jobs", {}).items()
+        }
+        self.imported_urls = dict(payload.get("imported_urls", {}))
+        self.review_logs = dict(payload.get("review_logs", {}))
+
+    def _suggestion_from_dict(self, data: dict[str, Any]) -> Suggestion:
+        relevance = data.get("relevance") or {}
+        relevance.pop("total", None)
+        violations = data.get("rule_violations") or []
+        return Suggestion(
+            **self._pick(
+                Suggestion,
+                {
+                    **data,
+                    "relevance": RelevanceDetails(**self._pick(RelevanceDetails, relevance)),
+                    "rule_violations": [Violation(**self._pick(Violation, violation)) for violation in violations],
+                },
+            )
+        )
+
+    def _pick(self, model: type, data: dict[str, Any]) -> dict[str, Any]:
+        return {key: data[key] for key in model.__dataclass_fields__ if key in data}
+
 
 store = DemoStore()
-

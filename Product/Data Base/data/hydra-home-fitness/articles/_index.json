@@ -1,0 +1,36 @@
+{
+  "articles": {
+    "art_strength": {
+      "file": "art_strength.json",
+      "title": "How to Build a Beginner Strength Routine at Home",
+      "url": "https://hydrafitness.com/blogs/training/beginner-strength-routine",
+      "status": "ready",
+      "imported_at": "2026-05-03T06:34:43.093677Z",
+      "last_recommendation_at": "2026-05-14T22:34:43.093680Z"
+    },
+    "art_recovery": {
+      "file": "art_recovery.json",
+      "title": "Recovery Tips for Busy Professionals Who Still Want to Train",
+      "url": "https://hydrafitness.com/blogs/training/recovery-tips-busy-professionals",
+      "status": "ready",
+      "imported_at": "2026-05-05T06:34:43.093689Z",
+      "last_recommendation_at": null
+    },
+    "art_setup": {
+      "file": "art_setup.json",
+      "title": "The Smartest Garage Gym Setup for Small Spaces",
+      "url": "https://hydrafitness.com/blogs/equipment/garage-gym-small-space",
+      "status": "needs_review",
+      "imported_at": "2026-05-09T06:34:43.093695Z",
+      "last_recommendation_at": "2026-05-14T06:34:43.093697Z"
+    },
+    "art_4b17ea0d": {
+      "file": "art_4b17ea0d.json",
+      "title": "Blogs/Training/Persistence Check",
+      "url": "https://hydrafitness.com/blogs/training/persistence-check",
+      "status": "ready",
+      "imported_at": "2026-05-15T06:37:03.603845Z",
+      "last_recommendation_at": null
+    }
+  }
+}

@@ -25,6 +25,7 @@ class TaskBus:
         )
         with store.lock:
             store.tasks[task.id] = task
+            store.persist()
         thread = Thread(target=self._execute, args=(task.id, payload, runner), daemon=True)
         thread.start()
         return task
@@ -41,6 +42,7 @@ class TaskBus:
             if result is not None:
                 task.result = result
             task.updated_at = datetime.utcnow().isoformat() + "Z"
+            store.persist()
 
     def _execute(self, task_id: str, payload: dict[str, Any], runner: Runner) -> None:
         self.update(task_id, status="running", progress=10, detail="Worker started.")
@@ -52,4 +54,3 @@ class TaskBus:
 
 
 task_bus = TaskBus()
-
