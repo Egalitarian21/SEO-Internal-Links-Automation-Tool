@@ -1,0 +1,140 @@
+## 脚本任务
+
+### 1 项目创建与配置管理
+
+| 项目创建   | 创建项目 ID、项目目录、基础配置文件，并初始化对应 Data/projects/{project_id} 数据结构。                                       |
+| 项目配置管理 | 保存项目域名、语言、行业、国家、抓取范围、链接比例、最大页面数等配置。                                                               |
+| 项目注册管理 | 在 system/project_registry.json 或数据库中记录所有项目的基本信息和路径。                                               |
+| 目录初始化  | 自动创建 raw、normalized、model_inputs、profiles、embeddings、link_graph、recommendations、reports、logs 等目录。 |
+| 任务日志管理 | 记录抓取、清洗、模型调用、推荐生成等任务的执行状态和错误信息。                                                                   |
+
+
+### 2 Sitemap 与爬虫
+
+| Sitemap 读取       | 读取用户导入的 sitemap.xml 或 sitemap URL。                             |
+| Sitemap Index 解析 | 识别 sitemap index，并递归提取子 sitemap 中的 URL。                        |
+| URL 去重           | 对 sitemap 中重复 URL 进行标准化和去重。                                    |
+| URL 过滤           | 过滤非目标域名、PDF、图片、JS、CSS、非 HTML 页面等无效 URL。                        |
+| URL 队列生成         | 将待抓取 URL 写入 crawl_queue，并标记 pending、processing、done、failed 状态。 |
+| robots.txt 检查    | 判断目标 URL 是否允许被抓取。                                              |
+| HTML 抓取          | 请求页面 HTML，记录状态码、响应头、最终 URL 和抓取时间。                              |
+| 重定向记录            | 记录 301、302 等跳转链和最终目标 URL。                                      |
+| 抓取失败重试           | 对超时、5xx、网络错误等页面进行有限次数重试。                                       |
+| Raw 层保存          | 将原始 HTML、响应头、状态码等保存到 raw/html_pages 或 raw_pages 表。             |
+
+### 3 HTML 清洗与结构化抽取
+|
+| HTML 清洗        | 移除 script、style、nav、footer、广告、评论、cookie banner 等无关内容。 |
+| 正文抽取           | 从页面 HTML 中提取主正文内容。                                    |
+| 标题抽取           | 提取 title、meta description、H1、H2、H3 等核心 SEO 元素。        |
+| 链接抽取           | 提取页面中的内部链接、外部链接、锚文本和链接位置。                             |
+| 图片信息抽取         | 提取图片 src、alt、title，并标记缺失 alt 的图片。                     |
+| Schema 抽取      | 识别 Article、Product、FAQ、BreadcrumbList 等结构化数据类型。       |
+| Canonical 抽取   | 提取 canonical URL 并判断是否自引用。                            |
+| Robots Meta 抽取 | 判断页面是否存在 noindex、nofollow 等指令。                        |
+| 语言检测           | 判断页面语言是否与项目语言一致。                                      |
+| URL 规范化        | 统一 URL 格式，处理尾斜杠、大小写、参数、锚点等问题。                         |
+| Normalized 层保存 | 将清洗后的页面结构化信息保存到 normalized/pages。                     |
+
+### 4 技术 SEO 检查
+
+| 状态码检查               | 判断页面是否为 200、301、404、500 等状态。                                       |
+| 可索引性检查              | 根据 noindex、canonical、robots 等判断页面是否可推荐为内链目标。                       |
+| Title 检查            | 检查 title 是否为空、过长、过短或重复。                                            |
+| Meta Description 检查 | 检查 meta description 是否为空、过长、过短或重复。                                 |
+| H1 检查               | 检查 H1 是否缺失、重复或与 title 冲突。                                          |
+| 内容长度检查              | 判断页面是否为薄内容。                                                        |
+| 内链数量检查              | 统计页面内部链接数量。                                                        |
+| 外链数量检查              | 统计页面外部链接数量。                                                        |
+| 图片 Alt 检查           | 检测图片是否缺失 alt 文本。                                                   |
+| Schema 检查           | 判断页面是否存在结构化数据。                                                     |
+| 技术问题分级              | 将问题按 high、medium、low 进行优先级分类。                                      |
+| SEO Audit 保存        | 将技术 SEO 检查结果保存到 normalized/technical_seo 或 technical_seo_audits 表。 |
+
+### 5 Model Input 构建
+
+| 页面内容压缩             | 将正文压缩为适合模型处理的摘要输入或内容块。                                                  |
+| Heading Outline 构建 | 将 H1-H3 组织成页面大纲。                                                        |
+| 内容分块               | 按 section、heading 或 token 长度将正文切成 chunks。                               |
+| 已有锚文本整理            | 整理页面已有内部链接和外部链接的锚文本。                                                    |
+| 模型输入组装             | 将 URL、title、meta、outline、excerpt、chunks、existing links 组装为 model input。 |
+| Model Input 保存     | 将模型输入保存到 model_inputs/pages 或 model_inputs/blogs。                       |
+
+### 6 站点数据库与语义索引
+
+| 页面 Profile 入库 | 保存模型生成的页面主题、关键词、实体、搜索意图和摘要。 |
+| Embedding 文本生成 | 将 title、summary、keywords、topics 等拼接成 embedding 输入文本。 |
+| Embedding 生成调度 | 批量调用 embedding API 或本地 embedding 模型生成页面向量。 |
+| 向量索引构建 | 将页面向量写入 FAISS、Chroma、pgvector 或本地 JSONL 索引。 |
+| 页面质量评分 | 根据技术 SEO、内容长度、索引状态、链接状态为页面打分。 |
+| 内链图谱构建 | 根据页面已有链接关系建立 source → target → anchor_text 图谱。 |
+| 孤岛页面识别 | 找出缺少入链或出链的页面。 |
+| 目标页面价值评分 | 根据页面类型、商业价值、内容质量和孤岛状态判断页面推荐价值。 |
+
+
+### 7 博客导入与解析
+
+| 博客导入 | 接收用户上传或粘贴的博客 HTML、Markdown、富文本或纯文本。 |
+| 博客 Raw 保存 | 将用户原始输入保存到 raw/imported_blogs。 |
+| 博客 HTML 清洗 | 清洗博客正文中的无关标签、样式和脚本。 |
+| 博客结构抽取 | 抽取博客 title、H1、H2、H3、段落、列表和已有链接。 |
+| 段落编号 | 为每个段落生成 paragraph_id，方便后续定位插链位置。 |
+| Section 编号 | 为每个标题区域生成 section_id，用于上下文定位。 |
+| 已有链接检测 | 检测博客中已有内部链接、外部链接、锚文本和目标 URL。 |
+| 博客 Normalized 保存 | 将清洗后的博客结构保存到 normalized/blogs。 |
+| 博客 Model Input 构建 | 将博客标题、大纲、段落、正文摘要和已有链接组装为模型输入。 |
+
+
+### 8 锚文本候选生成
+
+| 关键词短语抽取 | 从博客正文中抽取可能作为锚文本的名词短语、关键词和实体。 |
+| 段落上下文绑定 | 将每个锚文本候选绑定到 paragraph_id、section_id 和上下文句子。 |
+| 站内关键词匹配 | 将锚文本候选与项目页面 keywords、topics、title 进行匹配。 |
+| 重复锚文本过滤 | 去除重复、过短、过泛或已经链接过的锚文本。 |
+| 锚文本类型标记 | 标记 exact match、partial match、contextual phrase、entity、branded 等类型。 |
+| Anchor Candidates 保存 | 将锚文本候选保存到 recommendations/{blog_id}/anchor_candidates.json。 |
+
+
+### 9 内部链接候选召回与评分
+
+| 内链候选召回 | 根据锚文本、博客主题和 embedding 从项目数据库中召回相关站内页面。 |
+| 向量相似度匹配 | 使用博客片段或锚文本上下文向量匹配站内页面向量。 |
+| 关键词匹配评分 | 计算锚文本与页面 title、keywords、topics 的匹配程度。 |
+| 搜索意图匹配 | 判断博客片段与候选页面的 intent 是否一致。 |
+| 目标页面过滤 | 排除 404、noindex、canonical 到其他页面、薄内容、低质量页面。 |
+| 已有链接排除 | 排除博客中已经链接过的目标 URL。 |
+| 内链综合评分 | 根据语义相似度、关键词匹配、页面质量、商业价值等计算 internal_score。 |
+| 内链候选保存 | 将候选站内页面保存到 internal_link_candidates.json。 |
+
+
+### 10 外部链接候选召回与过滤
+
+| 外链触发判断 | 判断锚文本是否属于官方定义、标准、统计、工具文档或权威来源场景。 |
+| 外部资源库查询 | 从 shared/external_authority_sources 中查找相关权威资源。 |
+| 竞争对手过滤 | 排除被标记为 competitor 或不允许推荐的域名。 |
+| 低权威来源过滤 | 排除 authority_score 过低或来源类型不匹配的外部链接。 |
+| 外链候选评分 | 根据主题匹配度、权威性、上下文需求和来源类型计算 external_score。 |
+| 外链候选保存 | 将候选外链保存到 external_link_candidates.json。 |
+
+
+### 11 规则引擎与最终推荐
+
+| 内链/外链决策 | 根据是否存在高分内部页面、是否需要权威来源等规则决定推荐内链或外链。 |
+| 模型结果合并 | 合并模型给出的相关性判断、锚文本优化和推荐理由。 |
+| 链接数量控制 | 按文章长度控制总链接数、内链数和外链数。 |
+| 段落密度控制 | 限制每个段落或 section 的推荐链接数量。 |
+| 目标 URL 去重 | 同一篇博客中同一个目标 URL 只推荐一次。 |
+| 锚文本去重 | 避免同一篇博客重复推荐相同或高度相似的锚文本。 |
+| 外链比例控制 | 保证外链数量不超过设定比例。 |
+| 最终分数计算 | 结合相关性、自然度、目标价值、SEO 价值和置信度计算 final_score。 |
+| 优先级标记 | 将推荐标记为 High、Medium、Low 或 Reject。 |
+| 推荐结果保存 | 保存 final_recommendations.json、recommendation_summary.csv 和 linked_output.html。 |
+
+
+### 12 输出与用户审核
+
+| 推荐表格生成 | 输出锚文本、推荐 URL、链接类型、插入位置、优先级、理由。 |
+| JSON 结果导出 | 生成可供前端或后续系统调用的结构化推荐 JSON。 |
+| 可插入 HTML 生成 | 在用户确认后，将推荐链接插入原博客 HTML 中。 |
+| 审核状态管理 | 支持 suggested、accepted、rejected、modified 等推荐状态。 |
+| 报告生成 | 生成 crawl report、SEO report、internal link report、recommendation summary。 |

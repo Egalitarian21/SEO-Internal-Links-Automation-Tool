@@ -1,0 +1,51 @@
+## Raw 层
+本地路径: "C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\raw"
+
+这一层存的是**"爬虫抓到的一切原始信息"**：
+
+JSON文件内容包括:
+- 原始 HTML → 对象存储，网页的源代码
+- 响应头 → 服务器返回的"快递单"（比如内容类型、缓存时间）
+- 抓取时间 → 什么时候拍的这张"照片"
+- 状态码 → 网页有没有正常返回
+- canonical URL → 这个页面"官方认可"的正式地址
+- content hash → 给内容算一个"指纹"，下次再来可以判断内容有没有变
+
+大文本放 object storage，数据库只存引用和元数据。
+
+---
+
+## Normalized 层
+本地路径: "C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\normalized"
+
+JSON文件内容包括:
+- title
+- meta description
+- H1-H6
+- 正文 markdown
+- 内链 / 外链
+- schema.org
+- breadcrumb	
+- 图片 alt	
+- 页面类型 (Homepage / Page / Collection / Blog / External page)
+- chunk 列表 → 把长文章切成小块，方便模型逐段处理
+
+---
+
+## Model Input 层
+本地路径: "C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\model_inputs"
+
+JSON文件内容包括:
+- title
+- meta description
+- 结构化 heading tree → 博客正文标题大纲、集合页标题，排除导航栏、侧边栏等噪声h标题
+- 页面内容摘要
+- 关键chunks → 最重要的几段内容
+- 去重后的链接
+- schema 摘要 → 结构化数据的精华部分
+- embeddings → 给内容打上"语义标签"，方便后续搜索和召回
+
+## 文件命名规范
+以虚拟URL"https://www.example.com/blogs/how-to-do-seo"为例，其数据分别经历三次处理后，输出到三个层级的文件名都采用"[page_id]_how-to-do-seo"
+
+

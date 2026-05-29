@@ -24,6 +24,10 @@ venv/
 .env.*
 !.env.example
 
+# Local MVP backend runtime artifacts
+Product/Internal-linking-tool v1/Codes/Backend/data/
+Product/Internal-linking-tool v1/Codes/Backend/knowledge_base/
+
 # OS
 .DS_Store
 Thumbs.db

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routers import cards, drafts, imports, projects, publish, review, suggestions, tasks
+from app.routers import cards, drafts, imports, mvp, projects, publish, review, suggestions, tasks
 
 
 app = FastAPI(
@@ -27,9 +27,9 @@ app.include_router(suggestions.router, prefix="/api", tags=["suggestions"])
 app.include_router(review.router, prefix="/api", tags=["review"])
 app.include_router(publish.router, prefix="/api", tags=["publish"])
 app.include_router(tasks.router, prefix="/api", tags=["tasks"])
+app.include_router(mvp.router, prefix="/api", tags=["mvp"])
 
 
 @app.get("/healthz")
 def healthcheck() -> dict[str, str]:
     return {"status": "ok"}
-

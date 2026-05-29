@@ -1,0 +1,71 @@
+Demo/ 
+├── Code/
+│   ├── config/
+│   │   ├── project_config.yaml         # Demo全局配置
+│   │   ├── model_config.yaml           # 模型 API 配置
+│   │   └── link_rule.yaml       # 链接规则
+│   │
+│   ├── crawler/
+│   │   ├── sitemap_parser.py           # Sitemap 解析
+│   │   ├── html_fetcher.py             # HTML 抓取
+│   │   └── url_queue_manager.py        # URL 队列管理
+│   │
+│   ├── preprocessing/
+│   │   ├── html_cleaner.py             # HTML 清洗
+│   │   ├── text_extractor.py           # 正文/标题/H标签抽取
+│   │   ├── technical_seo_checker.py   # 技术SEO检查
+│   │   └── blog_parser.py              # 用户导入博客解析
+│   │
+│   ├── embedding/
+│   │   ├── embedding_generator.py      # 生成页面embedding
+│   │   └── embedding_matcher.py        # 博客与站内页面embedding匹配
+│   │
+│   ├── link_recommendation/
+│   │   ├── anchor_candidate_generator.py   # 生成锚文本候选
+│   │   ├── internal_link_selector.py       # 内链候选筛选
+│   │   ├── external_link_selector.py       # 外链候选筛选
+│   │   ├── model_api_interface.py          # 调用模型 API
+│   │   └── recommendation_engine.py       # 规则引擎合并、去重、排序
+│   │
+│   ├── utils/
+│   │   ├── logger.py                     # 日志管理
+│   │   ├── db_connector.py               # 数据库连接
+│   │   ├── file_manager.py               # 文件读写、JSON/HTML导入导出
+│   │   └── text_utils.py                 # 文本处理、正则、分词工具
+│   │
+│   └── main.py                            # 项目主程序入口，Sitemap导入/任务博客导入 流程调度 
+│
+└── Data/
+      └── [brand_name]/                  # [brand_name]是占位符, 用项目创建时用户输入的品牌名 
+          ├── raw/ 
+          │   ├── sitemap/                      # 原始 Sitemap XML 文件 
+          │   ├── html_pages/                   # Raw HTML 页面 
+          │   └── blogs/                        # 用户导入原始博客 HTML/Markdown/Word 
+          │ 
+          ├── normalized/ 
+          │   ├── pages/                        # 清洗后的站内页面（Normalized层） 
+          │   ├── blogs/                        # 清洗后的博客内容 
+          │   └── seo_checks/                    # 技术SEO检查结果 
+          │ 
+          ├── model_inputs/ 
+          │   ├── pages/                        # 站内页面 Model Input 层 
+          │   └── blogs/                        # 博客 Model Input 层 
+          │ 
+          ├── profiles/ 
+          │   ├── page_profiles/                 # 页面语义画像 
+          │   └── blog_profiles/                 # 博客语义画像 
+          │ 
+          ├── embeddings/ 
+          │   ├── page_embeddings/               # 页面embedding向量 
+          │   └── blog_embeddings/               # 博客embedding向量 
+          │ 
+          ├── link_graph/ 
+          │   ├── internal_links/                # 内链图谱 
+          │   └── external_sources/              # 外部链接资源信息 
+          │ 
+          └── recommendations/ 
+		└── [blog_id]/                
+			├── text_candidate/            # 存放候选锚文本
+                 	├── internal_links/                # 最终内部链接推荐 JSON 
+                 	├── external_links/                # 最终外部链接推荐 JSON 
+                 	└── outputs/                          # 整合推荐的内外链接的最终推荐结果

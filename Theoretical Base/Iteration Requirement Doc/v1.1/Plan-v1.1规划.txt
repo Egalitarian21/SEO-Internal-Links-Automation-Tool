@@ -1,0 +1,531 @@
+## 内链自动化流程总览
+
+### 阶段 1：项目初始化与站点数据库构建
+用户创建项目 → 导入 sitemap → 脚本爬取页面 → 清洗抽取 → 技术 SEO 检查 → 模型分析 → 存入数据库 → 建立站内语义索引
+
+### 阶段 2：博客导入与链接推荐
+用户导入博客 → 脚本解析博客 → 模型理解博客 → 提取可链接概念和锚文本候选 → 判断站内/外链 → 匹配站内页面或推荐外部权威链接 → 生成最终推荐
+
+---
+
+## 两阶段落地细节
+
+### 阶段1
+
+#### 1.1 创建项目(脚本)
+
+程序可视化CLI窗口输出提示，然后将接收到的输入保存为项目配置文件:
+配置文件存放路径: "C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]"
+
+CLI窗口提示词示例:
+"""
+请输入Sitemap链接、客户品牌名、客户网站域名、语言、
+"""
+
+项目配置示例: 
+"""JSON
+{
+  "brand_name": "xxx",
+  "sitemap_url": "https://example.com/sitemap.xml",
+  "language": "en",
+  "target_country": "US"
+  "domain": "https://example.com",
+  "crawl_scope": "same_domain_only",
+  "allow_subdomains": false,
+  "respect_robots_txt": true,
+}
+"""
+
+---
+
+#### 1.2 导入Sitemap(脚本)
+
+脚本读取项目配置的sitemap_url字段后进行以下操作：
+- 读取 sitemap XML；
+- 识别 sitemap index；
+- 递归读取子 sitemap；
+- 提取所有 URL；
+- 去重；
+- 标准化 URL；
+- 过滤非目标域名；
+- 过滤图片、PDF、JS、CSS 等非 HTML 页面；
+- 存入 crawl queue
+
+---
+
+#### 1.3 脚本批量爬取HTML(脚本)
+
+- robots.txt: 判断是否允许抓取             
+- HTTP 状态码
+- 重定向链: 记录最终 URL             
+- canonical: 判断规范 URL             
+- noindex: 判断是否应排除              
+- 页面类型: Homepage / Page / Collection / Blog 
+- 抓取时间: 用于后续增量更新             
+- HTML 原文 
+
+---
+
+#### 1.4 数据处理(脚本)
+
+根据"三层模型"的规范，将爬取到的数据按照各层规范处理，然后将处理结果存放在对应文件夹下：
+
+"三层模型"的具体信息存放在:
+"C:\Users\yiguo\Desktop\Internal Link Tool\Theoretical Base\Iteration Requirement Doc\v1.1\Demo-Data-三层模型.txt"
+
+---
+
+#### 1.5 生成页面语义画像(模型API)
+
+模型首先读取Model input层各JSON文件，按照以下结构生成对应语义画像JSON文件，
+存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\profiles\page_profiles"文件夹下:
+
+语义画像JSON文件示例:
+"""JSON
+{
+  "page_id": "page_001",
+  "primary_topic": "technical SEO audit",
+  "secondary_topics": [
+    "crawlability",
+    "indexing",
+    "site speed",
+    "structured data"
+  ],
+  "search_intent": "informational",
+  "content_type": "how-to guide",
+  "audience_stage": "middle_funnel",
+  "summary": "This page explains how to perform a technical SEO audit.",
+  "keywords": [
+    "technical SEO audit",
+    "crawlability",
+    "indexing issues"
+  ]
+} 
+"""
+
+---
+
+#### 1.6 生成Embedding向量(脚本)
+
+对以下内容生成 embedding, 存入"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\embeddings\page_embeddings"：
+
+"""
+title + h1 + summary + primary_topic + secondary_topics + keywords
+"""
+
+Embedding向量示例:
+"""JSON
+{
+  "page_id": "page_001",
+  "embedding_text": "Technical SEO Audit Guide ...",
+  "embedding_vector": [0.012, -0.033, ...],
+  "created_at": "2026-05-28T10:10:00Z"
+}
+"""
+
+---
+
+#### 1.7 技术SEO检查(脚本)
+
+链接推荐时避免推荐低质量页面，比如：
+
+- 404 页面；
+- noindex 页面；
+- canonical 到其他页面的页面；
+- 内容很薄的页面；
+- 重定向页面；
+- 非 HTML 页面。
+
+检查结果输出为表格，存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\normalized\seo_checks"
+
+检查结果输出示例:
+"""JSON
+{
+  "page_id": "page_001",
+  "status_code": 200,
+  "is_indexable": true,
+  "has_canonical": true,
+  "canonical_self_reference": true,
+  "title_length": 27,
+  "meta_description_length": 148,
+  "h1_count": 1,
+  "word_count": 2450,
+  "internal_link_count": 12,
+  "external_link_count": 3,
+  "image_missing_alt_count": 2,
+  "schema_detected": true,
+  "issues": [
+    {
+      "type": "image_missing_alt",
+      "severity": "low",
+      "message": "2 images are missing alt text."
+    }
+  ]
+}
+"""
+
+---
+
+#### 1.8 构建站内链接图谱(脚本)
+
+记录站内页面之间已有的链接关系, 根据站点内外链接关系表, 生成html格式的力导向图可视化脚本启动器：
+
+- 站点内链接关系表存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\link_graph\internal_links"
+- 站点外链接关系表存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\link_graph\external_links"
+- 力导向图入口脚本启动器存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\link_graph"
+
+力导向图样式参考："C:\Users\yiguo\Desktop\Internal Link Tool\Theoretical Base\Iteration Requirement Doc\v1.1\网页互链力导向图.png"
+力导向图效果：网页链接关系可视化，网页为节点，不同页面类型使用不同颜色，链接关系为边，点选某一结点可高亮显示相链节点
+
+链接关系表格式示例:
+"""JSON
+{
+  "source_page_id": "page_001",
+  "target_page_id": "page_002",
+  "source_url": "https://example.com/technical-seo-audit/",
+  "target_url": "https://example.com/crawl-budget/",
+  "anchor_text": "crawl budget",
+  "theme": "Crawlability issues",
+  "is_existing": true
+}
+"""
+
+---
+
+### 阶段2
+用户导入的博客可能是：
+
+- HTML 源码；
+- Markdown；
+- 纯文本；
+- Word/Google Docs 复制出的富文本；
+
+系统目标是输出：
+"""
+推荐锚文本 + 推荐 URL + 内链/外链类型 + 插入位置 
+"""
+
+#### 2.1 用户导入博客(脚本)
+
+程序可视化CLI窗口输出提示，获得博客文档的路径
+
+CLI窗口提示词示例:
+"""
+请输入博客文档所在位置
+"""
+
+---
+
+#### 2.2 解析博客(脚本)
+
+根据路径读取博客文档，然后把博客内容转成结构化数据:
+
+"""JSON
+{
+  "blog_id": "blog_001",
+  "title": "How to Improve Technical SEO",
+  "input_type": "html",
+  "raw_content": "<h1>...</h1>",
+  "created_at": "YY-MM-DD 11:00:00Z"
+}
+"""
+
+再对数据进行清洗:
+
+"""JSON
+{
+  "blog_id": "blog_001",
+  "h1": "How to Improve Technical SEO",
+  "sections": [
+    {
+      "section_id": "s1",
+      "heading": "What is Technical SEO?",
+      "paragraphs": [
+        {
+          "paragraph_id": "p1",
+          "text": "Technical SEO helps search engines crawl and index your website.",
+          "existing_links": []
+        }
+      ]
+    }
+  ],
+  "existing_internal_links": [],
+  "existing_external_links": []
+}
+"""
+
+---
+
+#### 2.3 生成博客画像(模型API)
+
+模型 API 分析整篇博客，输出存入"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\profiles\blog_profiles"
+
+博客画像示例:
+"""JSON
+{
+  "blog_id": "blog_001",
+  "primary_topic": "technical SEO improvement",
+  "secondary_topics": [
+    "crawlability",
+    "indexing",
+    "site speed",
+    "XML sitemap",
+    "robots.txt"
+  ],
+  "search_intent": "informational",
+  "content_type": "how-to guide",
+  "summary": "The blog explains practical ways to improve technical SEO, ..."
+}
+"""
+
+---
+
+#### 2.4 锚文本候选生成(脚本 + 模型API)
+
+Step1: 脚本从博客中抽取"候选锚文本 + 锚文本所在位置上下文"：
+
+脚本筛选的锚文本顺序: 
+1. 名词短语；
+2. 已出现的关键词；
+3. 重复出现的主题词；
+4. 与站点页面关键词匹配的短语；
+5. 专有名词；
+6. 需要引用来源的数据或标准。
+
+候选锚文本输出为"recommendation_script"excel表格, 存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\text_candidate"
+
+输出格式:
+"""JSON
+[
+  {
+    "anchor_text": "technical SEO audit",
+    "paragraph_id": "p3",
+    "section_id": "s2",
+    "context_sentence": "Before making changes, run a technical SEO audit to find crawl and indexing issues.",
+  },
+  {
+    "anchor_text": "Core Web Vitals",
+    "paragraph_id": "p8",
+    "section_id": "s5",
+    "context_sentence": "Core Web Vitals are important performance metrics for SEO.",
+  }
+]
+"""
+
+Step 2:  模型API二次筛选：
+
+模型负责判断:
+- 这个锚文本是否自然？
+- 是否适合加内链？
+- 目标页面是否匹配？
+- 是否需要换成更自然的表达？
+
+输出格式:
+"""JSON
+{
+  "anchor_candidates": [
+    {
+      "anchor_text": "run a technical SEO audit",
+      "paragraph_id": "p3",
+      "section_id": "s2",
+      "context_sentence": "Before making changes, run a technical SEO audit to find crawl and indexing issues.",
+    },
+    {
+      "anchor_text": "Core Web Vitals",
+      "paragraph_id": "p8",
+      "section_id": "s5",
+      "context_sentence": "Core Web Vitals are important performance metrics for SEO."
+    }
+  ]
+}
+"""
+
+筛选后锚文本输出为"recommendation_llm"excel表格, 存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\text_candidate"
+
+---
+
+#### 2.5 判断使用内部链接还是外部链接(脚本)
+
+对每个锚文本候选，系统判断：
+"""
+是否有高度匹配的站内页面？
+    是 → 优先推荐内部链接
+    否 → 是否属于需要权威来源的概念？
+        是 → 推荐外部链接
+        否 → 不推荐链接或降低优先级
+"""
+
+具体的判断逻辑:
+"""
+1. 查询项目站内页面库
+2. 如果存在高相关页面，优先内部链接
+3. 如果站内页面相关度一般，但该概念是标准/政策/官方文档/统计数据，则考虑外链
+4. 如果是竞争性商业关键词，不推荐外链到竞争对手
+5. 如果该段落已有链接，降低优先级
+6. 如果锚文本过于泛化，降低优先级
+7. 如果目标页面 noindex/404/canonical 到其他 URL，禁止推荐
+"""
+
+将需要添加内部链接的候选锚文本整理到"internal_links"excel表格, 存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\text_candidate"
+
+将需要添加外部链接的候选锚文本整理到"external_links"excel表格, 存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\text_candidate"
+
+---
+
+#### 2.7 内部链接推荐(脚本 + 模型API)
+
+总体采用 "规则约束的脚本 + 模型判断"的工作流
+
+Step 1: 脚本召回候选锚文本
+
+1. 召回来源与规则：
+- page_profile: 主题、关键词、搜索意图匹配
+- page_embeddings: 语义相似度匹配
+- normalized_pages: title、H1、URL、正文匹配
+- technical_seo_audits: 过滤不可推荐页面
+- internal_link_graph: 避免重复链接
+- 链接规则："C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Code\config\link_rule.yaml"
+
+2. 内部链接评分
+** similarity_score = 语义相似度 × 0.35 + 关键词匹配 × 0.20 + 页面质量 × 0.15 + 搜索意图匹配 × 0.10 + 页面商业价值 × 0.10 + 是否未被当前博客链接 × 0.10 **
+
+|          分数 | 决策        |
+| ----------: | --------- |
+|     >= 0.80 | 强推荐内部链接   |
+| 0.65 - 0.79 | 可推荐，需模型复核 |
+| 0.50 - 0.64 | 弱相关，不优先   |
+|      < 0.50 | 不推荐       |
+
+
+3. 召回结果示例:
+"""JSON
+{
+  "anchor_text": "technical SEO audit",
+  "sentence": "Before making changes, run a technical SEO audit to find crawl and indexing issues.",
+  "paragraph_id": "p3",
+  "candidate_internal_pages": [
+    {
+      "page_id": "page_001",
+      "url": "https://example.com/technical-seo-audit",
+      "title": "Technical SEO Audit Guide",
+      "primary_topic": "technical SEO audit",
+      "similarity_score": 0.91,
+      "page_quality_score": 0.95,
+      "already_linked": false
+    },
+    {
+      "page_id": "page_014",
+      "url": "https://example.com/seo-audit-tools",
+      "title": "Best SEO Audit Tools",
+      "similarity_score": 0.73,
+      "page_quality_score": 0.88,
+      "already_linked": false
+    }
+  ]
+}
+"""
+
+4. 在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\internal_links"下，创建一个命名为"internal_links_script"的excel表格，存放召回结果
+
+
+Step 2: 模型复核内部链接
+
+模型读取internal_links_script"表，做最后的语义判断，然后将结果整理为"internal_links_llm"excel表格，存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\internal_links"
+
+模型输入:
+"""JSON
+{
+  "blog_context": {
+    "anchor_text": "technical SEO audit",
+    "paragraph_id": "p3",
+    "sentence": "Before making changes, run a technical SEO audit to find crawl and indexing issues.",
+    "section_heading": "Start With an Audit"
+  },
+  "candidate_pages": [
+    {
+      "url": "https://example.com/technical-seo-audit/",
+      "title": "Technical SEO Audit Guide",
+      "summary": "A guide explaining how to audit technical SEO issues.",
+      "primary_topic": "technical SEO audit"
+    }
+  ]
+}
+"""
+
+模型输出,每个锚文本至少保留一条推荐内部链接,推荐链接数大于2时，保留2条最佳推荐链接:
+"""JSON
+{
+  "text_candidate_1": {
+    "anchor_text": "technical SEO audit",
+    "paragraph_id": "p3",
+    "sentence": "Before making changes, run a technical SEO audit to find crawl and indexing issues.",
+    "url_1": "https://example.com/technical-seo-audit",
+    "title_1": "Technical SEO Audit Guide",
+    "url_2": "https://example.com/seo-audit-guide",
+    "title_2": "How to do SEO audit"
+  }
+}
+"""
+
+---
+
+#### 2.8 外部链接推荐(脚本 + 模型API)
+
+总体采用 "规则约束的脚本 + 脚本实时搜索/验证 + 模型判断 "的工作流
+
+链接规则在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Code\config\external_sources.yaml"
+
+Step 1:  脚本读取候选锚文本，然后调用并爬取Google查询锚文本所得的SERP信息
+
+- 需要外部链接的候选锚文本在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\text_candidate"下的"external_links"excel表格
+
+- 在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\external_links"下，创建命名为"external_links_script"的excel表格，结果按照以下格式存放在表格里:
+"""JSON
+{
+  "anchor_text": "Core Web Vitals",
+  "context": "Core Web Vitals are important performance metrics for SEO.",
+  "candidate_external_sources": [
+    {
+      "domain": "www.example.gov",
+      "url": "https://www.example.gov/vitals/",
+      "source_type": "official_guide",
+      "authority_score": 0.94
+    },
+    {
+      "domain": "developers.google.com",
+      "url": "https://developers.google.com/search/docs/appearance/core-web-vitals",
+      "source_type": "official_documentation",
+      "authority_score": 0.96
+    }
+  ]
+}
+"""
+
+Step 2: 模型API判断适合当前上下文的最佳外链
+
+- 读取"external_links_script", 根据语义匹配与链接权威性，为每个候选锚文本保留1-2个推荐外链，输出格式如下:
+"""JSON
+{
+  "text_candidate_1": {
+    "anchor_text": "technical SEO audit",
+    "paragraph_id": "p3",
+    "sentence": "Before making changes, run a technical SEO audit to find crawl and indexing issues.",
+    "url_1": "https://example.org/what-is-seo-audit",
+    "title_1": "What is SEO Audit",
+    "url_2": "https://example.gov/seo-audit",
+    "title_2": "SEO Audit"
+  }
+}
+"""
+
+- 结果整理为"external_links_llm"excel表格，存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\internal_links"
+
+#### 2.9 整合推荐链接
+整合后的结果存放在"C:\Users\yiguo\Desktop\Internal Link Tool\Demo\Data\[brand_name]\recommendations\[blog_id]\outputs"，以excel表格形式存储，表格命名格式为"[blog_id]_recommend_links"
+
+表格格式:
+| 锚文本                 | 推荐链接                    | 类型 | 插入位置 | 
+| ------------------- | ----------------------- | -- | ---- | 
+| technical SEO audit | https://example.com/technical-seo-audit | 内链 | Before making changes, run a technical SEO audit to find crawl and indexing issues.| 
+| Core Web Vitals     | https://www.example.gov/vitals        | 外链 | Core Web Vitals are important performance metrics for SEO. | 
+

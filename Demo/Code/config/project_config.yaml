@@ -1,0 +1,15 @@
+project:
+  name: internal-link-tool
+  default_brand: brand_name
+  domain: ""
+  sitemap_urls: []
+
+paths:
+  data_root: ../Data
+
+recommendation_rules:
+  max_internal_links: 8
+  max_external_links: 3
+  min_anchor_length: 2
+  avoid_first_paragraph: true
+  avoid_headings: true

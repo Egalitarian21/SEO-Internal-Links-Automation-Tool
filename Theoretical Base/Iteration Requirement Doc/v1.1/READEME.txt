@@ -1,0 +1,7 @@
+1. Agent在执行任务前先阅读以下文档，了解Demo的架构:"C:\Users\yiguo\Desktop\Internal Link Tool\Theoretical Base\Iteration Requirement Doc\v1.1\Demo-文件目录层级示例.txt" 
+
+2. "Plan-v1.1规划"中出现的文件夹路径里，凡是出现"[brand_name]"和"[page_id]"，都需要使用项目创建时用户输入的客户品牌名替换"[banrd_name]",用正在处理的博客的id替换"[page_id]" 
+
+3. "Plan-v1.1规划"中各环节标题已备注当前环节是属于"脚本"/"模型API"/"脚本 + 模型API"任务，Agent编写代码前需要分别到以下文档找到对应的具体任务内容说明:
+- 脚本任务: "C:\Users\yiguo\Desktop\Internal Link Tool\Theoretical Base\Iteration Requirement Doc\v1.1\Demo-Code-脚本任务.txt"
+- 模型API任务: "C:\Users\yiguo\Desktop\Internal Link Tool\Theoretical Base\Iteration Requirement Doc\v1.1\Demo-Code-模型任务.txt"
