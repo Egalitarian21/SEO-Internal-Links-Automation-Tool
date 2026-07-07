@@ -1,0 +1,18 @@
+# Python 运行产物
+backend/.venv/
+backend/.pytest_cache/
+backend/**/__pycache__/
+backend/*.egg-info/
+
+# 前端依赖与构建产物
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# 本地环境配置
+.env
+
+# 本地开发日志
+*.log

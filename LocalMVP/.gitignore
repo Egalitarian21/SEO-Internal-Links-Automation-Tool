@@ -1,0 +1,28 @@
+.agents/
+.codex/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Dependencies, caches, and runtime output
+node_modules/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.log
+dist/
+build/
+.next/
+*.tsbuildinfo
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

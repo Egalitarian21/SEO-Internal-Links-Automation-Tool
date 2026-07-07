@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: internal_link_mvp_postgres
+    environment:
+      POSTGRES_USER: internal_link
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-CHANGE_ME_LOCAL_PASSWORD}
+      POSTGRES_DB: internal_link_mvp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
